@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from csv import writer
 import math
+import collections
 
 nan = float('nan')
 
@@ -336,9 +337,145 @@ def socialEngagement():
             csvWriter = writer(f1)
             csvWriter.writerow(temp_list)
 
+def mobility():
+    counter = 0
+
+    with open("mobility.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(['uid','total_location','unique_location'])
+
+    while counter<=60:
+        counter+=1
+        temp_list = []
+
+        if counter < 10:
+            user_id = 'u0' + str(counter)
+        else:
+            user_id = 'u' + str(counter)
+
+        temp_list.append(user_id)
+
+        total_locations = 0
+        try:
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/Wifi_Location/wifi_location_' + user_id + '.csv')
+        except:
+            continue
+        total_locations=len(df)
+        temp_list.append(total_locations)
+        list_locations = []
+        for index, item in df.iterrows():
+            print type(item['location'])
+            print item
+            raw_input()
+            list_locations.append(item['location'])
+
+        set_locations = set(list_locations)
+
+        print len(list_locations)
+
+        for item in list_locations:
+            print item
+            raw_input()
+        print len(set_locations)
+        raw_input()
+
+        temp_list.append(len(set_locations))
+def activity():
+    counter = 0
+
+    with open("physical_activity.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(['uid','most_freq_activity','proportion_running_walking'])
+
+    while counter<=60:
+        counter+=1
+        temp_list = []
+
+        if counter < 10:
+            user_id = 'u0' + str(counter)
+        else:
+            user_id = 'u' + str(counter)
+
+        temp_list.append(user_id)
+
+
+        try:
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhysicalActivity/activity_' + user_id + '.csv')
+        except:
+            continue
+
+        list_activities = df[' activity inference'].tolist()
+        print len(list_activities)
+        count_activity = collections.Counter(list_activities)
+
+        most_freq = count_activity.most_common(1)
+        temp_list.append(most_freq[0][0])
+
+        average = (count_activity[1] + count_activity[2])/float(len(list_activities))
+        temp_list.append(average)
+        print count_activity
+        #print count_activity[0]
+        #raw_input()
+
+        # for index, item in df.iterrows():
+        #     list_activities.append(item[' activity inference'])
+        with open("physical_activity.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(temp_list)
+def phone_activity():
+    counter = 0
+
+    with open("phone_activity.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(['uid','mean_duration_dark','std_dark','mean_lock_duration','std_lock'])
+
+    while counter<=60:
+        counter+=1
+        temp_list = []
+
+        if counter < 10:
+            user_id = 'u0' + str(counter)
+        else:
+            user_id = 'u' + str(counter)
+
+        temp_list.append(user_id)
+
+
+        try:
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhoneLight/dark_' + user_id + '.csv')
+        except:
+            continue
+
+        list_dark_duration = []
+        for index,item in df.iterrows():
+            list_dark_duration.append(item['end']-item['start'])
+        temp_list.append(np.mean(list_dark_duration))
+        temp_list.append(np.std(list_dark_duration))
+
+        try:
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhoneLock/phonelock_' + user_id + '.csv')
+        except:
+            continue
+
+        list_lock_duration = []
+        for index,item in df.iterrows():
+            list_lock_duration.append(item['end']-item['start'])
+        temp_list.append(np.mean(list_lock_duration))
+        temp_list.append(np.std(list_lock_duration))
+
+        with open("phone_activity.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(temp_list)
+
+def regression(trainingFile):
+    pass
 
 
 
 if __name__ == '__main__':
     # mentalWellBeing()
-    socialEngagement()
+    # socialEngagement()
+    # mobility()
+    # activity()
+    # phone_activity()
+    regression('phone_activity.csv')
