@@ -10,11 +10,11 @@ nan = float('nan')
 
 
 def mentalWellBeing():
-    df_flourishing = pd.read_csv("StudentLife_AssignmentData/Surveys/FlourishingScale.csv")
-    df_loneliness = pd.read_csv("StudentLife_AssignmentData/Surveys/LonelinessScale.csv")
-    df_panas = pd.read_csv("StudentLife_AssignmentData/Surveys/panas.csv")
-    df_phq = pd.read_csv("StudentLife_AssignmentData/Surveys/PHQ-9.csv")
-    df_perceivedStress = pd.read_csv("StudentLife_AssignmentData/Surveys/PerceivedStressScale.csv")
+    df_flourishing = pd.read_csv("StudentLife_AssignmentData/Surveys/FlourishingScale.csv",index_col=False)
+    df_loneliness = pd.read_csv("StudentLife_AssignmentData/Surveys/LonelinessScale.csv",index_col=False)
+    df_panas = pd.read_csv("StudentLife_AssignmentData/Surveys/panas.csv",index_col=False)
+    df_phq = pd.read_csv("StudentLife_AssignmentData/Surveys/PHQ-9.csv",index_col=False)
+    df_perceivedStress = pd.read_csv("StudentLife_AssignmentData/Surveys/PerceivedStressScale.csv",index_col=False)
 
 
     # print df_flourishing
@@ -273,11 +273,11 @@ def mentalWellBeing():
                     csvWriter.writerow(temp_list)
                     continue
 
-    df1 = pd.read_csv("file1.csv")
-    df2 = pd.read_csv("file1.csv")
-    df3 = pd.read_csv("file1.csv")
-    df4 = pd.read_csv("file1.csv")
-    df5 = pd.read_csv("file1.csv")
+    df1 = pd.read_csv("file1.csv",index_col=False)
+    df2 = pd.read_csv("file1.csv",index_col=False)
+    df3 = pd.read_csv("file1.csv",index_col=False)
+    df4 = pd.read_csv("file1.csv",index_col=False)
+    df5 = pd.read_csv("file1.csv",index_col=False)
 
     df1 = df1.set_index('uid')
     # print df1
@@ -310,14 +310,14 @@ def socialEngagement():
 
         total_calls = 0
         try:
-            df = pd.read_csv('StudentLife_AssignmentData/SensingData/CallLog/call_log_' + user_id + '.csv')
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/CallLog/call_log_' + user_id + '.csv',index_col=False)
         except:
             continue
         total_calls = len(df)
         temp_list.append(total_calls)
 
         try:
-            df = pd.read_csv('StudentLife_AssignmentData/SensingData/Conversations/conversation_' + user_id + '.csv')
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/Conversations/conversation_' + user_id + '.csv',index_col=False)
         except:
             continue
         total_conversations = 0
@@ -358,29 +358,38 @@ def mobility():
 
         total_locations = 0
         try:
-            df = pd.read_csv('StudentLife_AssignmentData/SensingData/Wifi_Location/wifi_location_' + user_id + '.csv')
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/Wifi_Location/wifi_location_' + user_id + '.csv',index_col=False)
         except:
             continue
+        #print df
         total_locations=len(df)
+        #print total_locations
         temp_list.append(total_locations)
         list_locations = []
-        for index, item in df.iterrows():
-            print type(item['location'])
-            print item
-            raw_input()
-            list_locations.append(item['location'])
+
+        list_locations=df['location'].tolist()
+        # for index, item in df.iterrows():
+        #     #print type(item['location'])
+        #     #print item
+        #     #raw_input()
+        #     list_locations.append(item['location'])
 
         set_locations = set(list_locations)
 
-        print len(list_locations)
+        #print len(list_locations)
 
-        for item in list_locations:
-            print item
-            raw_input()
-        print len(set_locations)
-        raw_input()
+        # for item in list_locations:
+        #     print item
+            #raw_input()
+        #print len(set_locations)
+        #raw_input()
 
         temp_list.append(len(set_locations))
+        #raw_input()
+        with open("mobility.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(temp_list)
+
 def activity():
     counter = 0
 
@@ -401,7 +410,7 @@ def activity():
 
 
         try:
-            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhysicalActivity/activity_' + user_id + '.csv')
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhysicalActivity/activity_' + user_id + '.csv',index_col=False)
         except:
             continue
 
@@ -443,7 +452,7 @@ def phone_activity():
 
 
         try:
-            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhoneLight/dark_' + user_id + '.csv')
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhoneLight/dark_' + user_id + '.csv',index_col=False)
         except:
             continue
 
@@ -454,7 +463,7 @@ def phone_activity():
         temp_list.append(np.std(list_dark_duration))
 
         try:
-            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhoneLock/phonelock_' + user_id + '.csv')
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/PhoneLock/phonelock_' + user_id + '.csv',index_col=False)
         except:
             continue
 
@@ -469,8 +478,8 @@ def phone_activity():
             csvWriter.writerow(temp_list)
 
 def regression(trainingFile):
-    df_input=pd.read_csv(trainingFile)
-    df_output = pd.read_csv("StudentLife_AssignmentData/GroundTruth/grades.csv")
+    df_input=pd.read_csv(trainingFile,index_col=False)
+    df_output = pd.read_csv("StudentLife_AssignmentData/GroundTruth/grades.csv",index_col=False)
 
     df_input = df_input.set_index('uid')
     df_output = df_output.set_index('uid')
@@ -510,4 +519,4 @@ if __name__ == '__main__':
     # mobility()
     # activity()
     # phone_activity()
-    regression('output_mentalWellBeing.csv')
+    regression('mobility.csv')
