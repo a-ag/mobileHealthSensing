@@ -500,9 +500,10 @@ def regression(trainingFile):
 
     list_columns.remove(' gpa 13s')
     list_columns.remove(' cs 65')
+    list_columns.remove(' gpa all')
 
     df_X = df_entire[list_columns]
-
+    print df_X
     import statsmodels.api as sm
     model = sm.OLS(y,df_X)
     results = model.fit()
@@ -519,4 +520,4 @@ if __name__ == '__main__':
     # mobility()
     # activity()
     # phone_activity()
-    regression('mobility.csv')
+    regression('output_mentalWellBeing.csv')
