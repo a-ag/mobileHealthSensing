@@ -286,8 +286,59 @@ def mentalWellBeing():
 
     result = pd.concat([df1,df2,df3,df4,df5],axis=1,join='inner')
 
-    result.to_csv("output.csv")
+    result.to_csv("output_mentalWellBeing.csv")
+
+def socialEngagement():
+    counter = 0
+
+    with open("socialEngagement.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(['uid','total_calls','total_conversations','mean_call_duration','std_call_duration'])
+
+    while counter<=60:
+        counter+=1
+        temp_list = []
+
+        if counter < 10:
+            user_id = 'u0' + str(counter)
+        else:
+            user_id = 'u' + str(counter)
+
+        temp_list.append(user_id)
+
+        total_calls = 0
+        try:
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/CallLog/call_log_' + user_id + '.csv')
+        except:
+            continue
+        total_calls = len(df)
+        temp_list.append(total_calls)
+
+        try:
+            df = pd.read_csv('StudentLife_AssignmentData/SensingData/Conversations/conversation_' + user_id + '.csv')
+        except:
+            continue
+        total_conversations = 0
+        total_conversations=len(df)
+        temp_list.append(total_conversations)
+
+        list_timeDiff = []
+        print df.columns.values
+        for index,item in df.iterrows():
+            list_timeDiff.append(item[' end_timestamp']-item['start_timestamp'])
+        mean_call_duation = np.mean(list_timeDiff)
+        std_call_duration = np.std(list_timeDiff)
+
+        temp_list.append(mean_call_duation)
+        temp_list.append(std_call_duration)
+
+        with open("socialEngagement.csv",'a') as f1:
+            csvWriter = writer(f1)
+            csvWriter.writerow(temp_list)
+
+
 
 
 if __name__ == '__main__':
-    mentalWellBeing()
+    # mentalWellBeing()
+    socialEngagement()
