@@ -4,6 +4,7 @@ import numpy as np
 from csv import writer
 import math
 import collections
+from statsmodels.sandbox.regression.predstd import wls_prediction_std
 
 nan = float('nan')
 
@@ -468,8 +469,39 @@ def phone_activity():
             csvWriter.writerow(temp_list)
 
 def regression(trainingFile):
-    pass
+    df_input=pd.read_csv(trainingFile)
+    df_output = pd.read_csv("StudentLife_AssignmentData/GroundTruth/grades.csv")
 
+    df_input = df_input.set_index('uid')
+    df_output = df_output.set_index('uid')
+
+
+    df_entire = pd.concat([df_input,df_output],axis=1,join='outer')
+
+    df_entire = df_entire.fillna(value=0)
+    print df_entire
+    print df_entire.isnull().values.any()
+    print df_entire.columns.values
+
+    y= df_entire[' gpa all']
+    list_columns_temp = (df_entire.columns.values)
+    list_columns=[]
+    for item in list_columns_temp:
+        list_columns.append(item)
+
+    list_columns.remove(' gpa 13s')
+    list_columns.remove(' cs 65')
+
+    df_X = df_entire[list_columns]
+
+    import statsmodels.api as sm
+    model = sm.OLS(y,df_X)
+    results = model.fit()
+
+    print (results.summary())
+
+
+    # x = df_entire
 
 
 if __name__ == '__main__':
@@ -478,4 +510,4 @@ if __name__ == '__main__':
     # mobility()
     # activity()
     # phone_activity()
-    regression('phone_activity.csv')
+    regression('socialEngagement.csv')
